@@ -38,8 +38,8 @@ public class Mycontroller {
 	@PostMapping("/login")
 	public ResponseEntity<String> loging(@RequestBody User user) {
 		try {
-			ss.signup(user.getEmail(),user.getPassword());
-			String token = jwtUtil.generateToken(user.getEmail());
+			User use=ss.signup(user.getEmail(),user.getPassword());
+			String token = jwtUtil.generateToken(use);
 			System.out.println("Token is: "+token);
 			return ResponseEntity.ok(token);
 			

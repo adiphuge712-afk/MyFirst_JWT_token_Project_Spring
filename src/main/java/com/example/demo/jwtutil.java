@@ -1,13 +1,19 @@
 package com.example.demo;
 
 
-import io.jsonwebtoken.*;
-import io.jsonwebtoken.security.Keys;
+import java.security.Key;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
+
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
-import java.security.Key;
-import java.util.Date;
+import com.example.demo.entity.User;
+
+import io.jsonwebtoken.Jwts;
+import io.jsonwebtoken.SignatureAlgorithm;
+import io.jsonwebtoken.security.Keys;
 
 @Component
 public class jwtutil {
@@ -22,9 +28,12 @@ public class jwtutil {
         return Keys.hmacShaKeyFor(secret.getBytes());
     }
 
-    public String generateToken(String email) {
+    public String generateToken(User user) {
+    	Map<String, Object> claims = new HashMap<>();
+    	claims.put("user", user);
         return Jwts.builder()
-                .setSubject(email)
+        		.setClaims(claims)
+                .setSubject(user.getEmail())
                 .setIssuedAt(new Date())
                 .setExpiration(new Date(System.currentTimeMillis() + expiration))
                 .signWith(getSignKey(), SignatureAlgorithm.HS256)
@@ -39,4 +48,5 @@ public class jwtutil {
                 .getBody()
                 .getSubject();
     }
+    
 }
