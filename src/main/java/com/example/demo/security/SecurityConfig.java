@@ -14,13 +14,17 @@ import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.password.NoOpPasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+
+import com.example.demo.filter.Jwtfilter;
 
 @Configuration
 @EnableWebSecurity
 public class SecurityConfig {
 	@Autowired
 	private UserDetailsService userdetailservise;
-
+	@Autowired
+	private Jwtfilter jwtfilter;
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
     	return http
@@ -31,6 +35,7 @@ public class SecurityConfig {
             .anyRequest().authenticated())
             .httpBasic(Customizer.withDefaults())
             .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+            .addFilterBefore(jwtfilter, UsernamePasswordAuthenticationFilter.class)
             .build();
     }
     @Bean
