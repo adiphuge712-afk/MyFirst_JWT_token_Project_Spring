@@ -13,6 +13,8 @@ import com.example.demo.jwtutil;
 import com.example.demo.entity.User;
 import com.example.demo.services.Service_file;
 
+import jakarta.servlet.http.HttpServletRequest;
+
 @RestController
 public class Mycontroller {
 	@Autowired
@@ -21,8 +23,8 @@ public class Mycontroller {
 	jwtutil jwtUtil;
 	
 	@GetMapping("/")
-	public ResponseEntity<?> test() {
-		return ResponseEntity.status(HttpStatus.ACCEPTED).body("Tested ok");
+	public ResponseEntity<?> test(HttpServletRequest req) {
+		return ResponseEntity.status(HttpStatus.ACCEPTED).body("Tested ok :"+ req.getSession().getId());
 	}
 
 	@PostMapping("/register")
