@@ -10,6 +10,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
 
+import com.example.demo.entity.Admin;
 import com.example.demo.entity.User;
 
 import io.jsonwebtoken.Claims;
@@ -94,5 +95,17 @@ public class jwtutil {
         final String email = extractEmail(token);
         return (email.equals(userDetails.getUsername()) && !isTokenExpired(token));
     }
+
+	public String generateToken(Admin use) {
+		Map<String, Object> claims = new HashMap<>();
+    	claims.put("user", use);
+        return Jwts.builder()
+        		.setClaims(claims)
+                .setSubject(use.getEmail())
+                .setIssuedAt(new Date())
+                .setExpiration(new Date(System.currentTimeMillis() + expiration))
+                .signWith(getSignKey(), SignatureAlgorithm.HS256)
+                .compact();
+	}
     
 }

@@ -29,9 +29,9 @@ public class SecurityConfig {
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
     	return http
             .csrf(csrf -> csrf.disable())
-            .authorizeHttpRequests(auth -> auth.requestMatchers("/register","/login").permitAll()
-            		.requestMatchers("/**").hasRole("USER")
-            
+            .authorizeHttpRequests(auth -> auth.requestMatchers("/user/register","/user/login","/admin/register","/admin/login").permitAll()
+            		.requestMatchers("/user/**").hasRole("USER")
+            		.requestMatchers("/admin/**").hasRole("ADMIN")
             .anyRequest().authenticated())
             .httpBasic(Customizer.withDefaults())
             .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
