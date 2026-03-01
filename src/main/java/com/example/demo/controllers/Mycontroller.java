@@ -1,6 +1,8 @@
 package com.example.demo.controllers;
 
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -47,6 +49,17 @@ public class Mycontroller {
 			
 		} catch (Exception e) {
 			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Login Fail");
+		}
+	}
+	@GetMapping("/viewDetails")
+	public ResponseEntity<List<User>> viewDetails() {
+		try {
+		List<User> us=	ss.viewDetails();
+			
+			return ResponseEntity.ok(us);
+			
+		} catch (Exception e) {
+			return ResponseEntity.ok(null);
 		}
 	}
 	

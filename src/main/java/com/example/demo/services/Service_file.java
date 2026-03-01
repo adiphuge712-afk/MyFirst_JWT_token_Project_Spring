@@ -1,5 +1,7 @@
 package com.example.demo.services;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -32,5 +34,10 @@ public class Service_file implements UserDetailsService {
 		User us = sr.findByEmail(username).orElseThrow(() -> new RuntimeException("Email not found"));
 		
 		return new UserPrincilpals(us);
+	}
+
+	public List<User> viewDetails() {
+		
+		return sr.findAll();
 	}
 }
