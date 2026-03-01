@@ -6,6 +6,9 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -23,7 +26,8 @@ public class Mycontroller {
 	Service_file ss;
 	@Autowired
 	jwtutil jwtUtil;
-	
+	@Autowired
+	private AuthenticationManager authmaneger;
 	@GetMapping("/")
 	public ResponseEntity<?> test(HttpServletRequest req) {
 		return ResponseEntity.status(HttpStatus.ACCEPTED).body("Tested ok :"+ req.getSession().getId());
@@ -41,12 +45,25 @@ public class Mycontroller {
 
 	@PostMapping("/login")
 	public ResponseEntity<String> loging(@RequestBody User user) {
+//		try {
+//			User use=ss.signup(user.getEmail(),user.getPassword());
+//			String token = jwtUtil.generateToken(use);
+//			System.out.println("Token is: "+token);
+//			return ResponseEntity.ok(token);
+//			
+//		} catch (Exception e) {
+//			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Login Fail");
+//		}
 		try {
-			User use=ss.signup(user.getEmail(),user.getPassword());
-			String token = jwtUtil.generateToken(use);
-			System.out.println("Token is: "+token);
-			return ResponseEntity.ok(token);
-			
+			Authentication authentication=authmaneger.authenticate(new UsernamePasswordAuthenticationToken(user.getEmail(),user.getPassword()));
+//			User use=ss.signup(user.getEmail(),user.getPassword());
+			if(authentication.isAuthenticated()) {
+				User use=ss.signup(user.getEmail(),user.getPassword());
+				String token = jwtUtil.generateToken(use);
+				return ResponseEntity.ok(token);
+			}else {
+				return ResponseEntity.ok("FAil to authenticate");
+			}
 		} catch (Exception e) {
 			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Login Fail");
 		}

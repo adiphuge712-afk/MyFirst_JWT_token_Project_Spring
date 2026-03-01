@@ -29,6 +29,7 @@ public class jwtutil {
     }
 
     public String generateToken(User user) {
+    	System.out.println("User name is :"+user.getUsername());
     	Map<String, Object> claims = new HashMap<>();
     	claims.put("user", user);
         return Jwts.builder()
