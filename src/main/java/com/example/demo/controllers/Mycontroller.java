@@ -16,6 +16,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.example.demo.jwtutil;
+import com.example.demo.DTO.Login_Dto;
+import com.example.demo.entity.Admin;
 import com.example.demo.entity.User;
 import com.example.demo.services.Service_file;
 
@@ -46,35 +48,71 @@ public class Mycontroller {
 	}
 
 	@PostMapping("/login")
-	public ResponseEntity<String> loging(@RequestBody User user) {
+	public ResponseEntity<String> loging(@RequestBody Login_Dto user) {
+
 //		try {
-//			User use=ss.signup(user.getEmail(),user.getPassword());
-//			String token = jwtUtil.generateToken(use);
-//			System.out.println("Token is: "+token);
-//			return ResponseEntity.ok(token);
-//			
+////			System.out.println(user.getEmail());
+//			Authentication authentication=authmaneger.authenticate(new UsernamePasswordAuthenticationToken(user.getEmail(),user.getPassword()));
+////			User use=ss.signup(user.getEmail(),user.getPassword());
+//			if(authentication.isAuthenticated()) {
+//				User use=ss.signup(user.getEmail(),user.getPassword());
+//				String token = jwtUtil.generateToken(use);
+//				return ResponseEntity.ok(token);
+//			}else {
+//				return ResponseEntity.ok("FAil to authenticate");
+//			}
 //		} catch (Exception e) {
 //			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Login Fail");
 //		}
-		try {
-			System.out.println(user.getEmail());
-			Authentication authentication=authmaneger.authenticate(new UsernamePasswordAuthenticationToken(user.getEmail(),user.getPassword()));
-//			User use=ss.signup(user.getEmail(),user.getPassword());
-			if(authentication.isAuthenticated()) {
-				User use=ss.signup(user.getEmail(),user.getPassword());
-				String token = jwtUtil.generateToken(use);
-				return ResponseEntity.ok(token);
-			}else {
-				return ResponseEntity.ok("FAil to authenticate");
+		if(user.getRole().equals("USER")) {
+			try {
+//				System.out.println(user.getEmail());
+				Authentication authentication=authmaneger.authenticate(new UsernamePasswordAuthenticationToken(user.getEmail(),user.getPassword()));
+//				User use=ss.signup(user.getEmail(),user.getPassword());
+				if(authentication.isAuthenticated()) {
+					User use=ss.signup(user.getEmail(),user.getPassword());
+					String token = jwtUtil.generateToken(use);
+					return ResponseEntity.ok(token);
+				}else {
+					return ResponseEntity.ok("FAil to authenticate");
+				}
+			} catch (Exception e) {
+				return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Login Fail");
 			}
-		} catch (Exception e) {
-			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Login Fail");
+		} else if(user.getRole().equals("ADMIN")) {
+			try {
+//				System.out.println(user.getEmail());
+				Authentication authentication=authmaneger.authenticate(new UsernamePasswordAuthenticationToken(user.getEmail(),user.getPassword()));
+//				User use=ss.signup(user.getEmail(),user.getPassword());
+				if(authentication.isAuthenticated()) {
+					Admin use=ss.adminsignup(user.getEmail(),user.getPassword());
+					String token = jwtUtil.generateToken(use);
+					return ResponseEntity.ok(token);
+				}else {
+					return ResponseEntity.ok("FAil to authenticate");
+				}
+			} catch (Exception e) {
+				return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Login Fail");
+			}
+		}else {
+			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Login Fail No Data match");
 		}
 	}
 	@GetMapping("/viewDetails")
 	public ResponseEntity<List<User>> viewDetails() {
 		try {
 		List<User> us=	ss.viewDetails();
+			
+			return ResponseEntity.ok(us);
+			
+		} catch (Exception e) {
+			return ResponseEntity.ok(null);
+		}
+	}
+	@GetMapping("/viewDetailsadmin")
+	public ResponseEntity<List<Admin>> viewDetailsadmin() {
+		try {
+		List<Admin> us=	ss.viewDetailsadmin();
 			
 			return ResponseEntity.ok(us);
 			
